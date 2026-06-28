@@ -19,8 +19,8 @@ pick a module, answer a few prompts, review a preview, and apply.
 | # | Module | Status |
 |---|--------|--------|
 | 1 | First-Touch Config | Coming Soon |
-| 2 | **ConfigForge** — Bulk Config Push (SSH) | ready |
-| 3 | NetDoctor — AI Troubleshooter | Coming Soon |
+| 2 | ConfigForge — Bulk Config Push (SSH + Simulation) | ready |
+| 3 | NetDoctor — AI Troubleshooter (SSH + Simulation) | ready |
 
 ## Install
 
@@ -67,6 +67,42 @@ Passwords are read with `getpass` (never echoed) and masked in the on-screen pre
 Simulation mode writes plaintext passwords to file — `output/` is in `.gitignore`.
 Nothing is sent to a device until you type **yes** at the confirmation step.
 
+## NetDoctor
+
+Connects to one device or a series over SSH (read-only — never modifies config),
+or reads from saved show output files in Simulation mode. Runs a curated set of
+show commands, parses the output deterministically, and sends structured findings
+to the Gemini 2.5 Flash API to produce a plain-language diagnostic report saved
+to `output/<hostname>_report.txt`.
+
+**Requires a free Gemini API key** (no credit card needed):
+1. Go to aistudio.google.com → Get API key → Create API key
+2. Set it before running:
+   ```
+   Windows PowerShell : $env:GEMINI_API_KEY="your-key-here"
+   Permanent          : setx GEMINI_API_KEY "your-key-here"
+   ```
+
+**What it checks (deterministic parser):**
+
+| Check | Scope |
+|-------|-------|
+| Interface up/down, up/up, err-disabled | Both |
+| Input errors and CRC counters | Both |
+| OSPF neighbor states | Router |
+| Routing table / missing default route | Router |
+| STP blocked ports | Switch |
+| Port security violations | Switch |
+| EtherChannel suspended members | Switch |
+| DHCP conflicts | Router |
+
+**Simulation mode:** create `sim_input/<hostname>/` folder automatically on first
+run, paste show output into the generated `.txt` files, re-run for a full AI report —
+no device needed.
+
+NetDoctor is strictly read-only. It will never send a `configure terminal` command
+to any device.
+
 ## Lab / testing (GNS3)
 
 Host-side Python **cannot** reach Cisco Packet Tracer devices (PT doesn't bridge
@@ -82,7 +118,9 @@ to the host network stack), so ConfigForge is tested against **GNS3**:
 
 - First-Touch Config (console/serial bootstrap)
 - ConfigForge: console-cable connection method
-- NetDoctor: read-only `show`-command collection + parsing + AI-assisted report
+- ConfigForge: configurable SSH port (currently hardcoded to 22)
+- NetDoctor: console-cable connection method
+- NetDoctor: TextFSM/Genie structured parsing (richer analysis)
 
 ## Author
 
