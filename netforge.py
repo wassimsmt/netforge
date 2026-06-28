@@ -40,7 +40,8 @@ def main():
         elif choice == "2":
             configforge.run()
         elif choice == "3":
-            ui.coming_soon("NetDoctor (AI Troubleshooter)")
+            import netdoctor
+            netdoctor.run()
         elif choice == "0":
             ui.info("Goodbye.")
             sys.exit(0)
