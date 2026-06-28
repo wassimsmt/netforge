@@ -30,7 +30,7 @@ def run():
     ui.section("ConfigForge — Bulk Config Push")
 
     mode = connection_menu()
-    if mode is None:
+    if mode in (None, "back"):
         return
 
     devices = build_inventory()
@@ -63,6 +63,7 @@ def connection_menu():
     print(f"  {ui.GREEN}[2]{ui.RESET} Console cable  {ui.YELLOW}(Coming Soon){ui.RESET}")
     print(f"  {ui.GREEN}[3]{ui.RESET} Simulation / Dry-run (export config to file)  "
           f"{ui.GREEN}ready{ui.RESET}")
+    print(f"  {ui.GREEN}[99]{ui.RESET} Back to main menu")
     choice = ui.ask(">")
     if choice == "1":
         return "ssh"
@@ -71,6 +72,8 @@ def connection_menu():
         return None
     if choice == "3":
         return "sim"
+    if choice == "99":
+        return "back"
     ui.warn("Invalid choice.")
     return None
 

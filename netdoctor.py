@@ -66,7 +66,7 @@ def run():
     ui.section("NetDoctor — AI Troubleshooter")
 
     mode = connection_menu()
-    if mode is None:
+    if mode in (None, "back"):
         return
 
     devices = build_inventory()
@@ -121,6 +121,7 @@ def connection_menu():
     print(f"  {ui.GREEN}[1]{ui.RESET} SSH                               {ui.GREEN}ready{ui.RESET}")
     print(f"  {ui.GREEN}[2]{ui.RESET} Simulation / read from sim_input/  {ui.GREEN}ready{ui.RESET}")
     print(f"  {ui.GREEN}[3]{ui.RESET} Console cable                      {ui.YELLOW}(Coming Soon){ui.RESET}")
+    print(f"  {ui.GREEN}[99]{ui.RESET} Back to main menu")
     choice = ui.ask(">")
     if choice == "1":
         return "ssh"
@@ -129,6 +130,8 @@ def connection_menu():
     if choice == "3":
         ui.coming_soon("Console cable connection")
         return None
+    if choice == "99":
+        return "back"
     ui.warn("Invalid choice.")
     return None
 

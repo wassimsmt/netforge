@@ -23,8 +23,8 @@ def main_menu():
           f"{ui.YELLOW}(Coming Soon){ui.RESET}")
     print(f"  {ui.GREEN}[2]{ui.RESET} ConfigForge — Bulk Config Push  "
           f"{ui.GREEN}ready{ui.RESET}")
-    print(f"  {ui.GREEN}[3]{ui.RESET} NetDoctor  — AI Troubleshooter  "
-          f"{ui.YELLOW}(Coming Soon){ui.RESET}")
+    print(f"  {ui.GREEN}[3]{ui.RESET} NetDoctor  — AI Troubleshooter   "
+          f"{ui.GREEN}ready{ui.RESET}")
     print(f"  {ui.GREEN}[0]{ui.RESET} Exit")
     print()
 
