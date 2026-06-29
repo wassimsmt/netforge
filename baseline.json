@@ -1,0 +1,82 @@
+[
+  {
+    "id": "SEC-001",
+    "description": "Enable secret must be configured",
+    "check_type": "must_contain",
+    "value": "enable secret",
+    "severity": "critical",
+    "fix": "enable secret <your-password>"
+  },
+  {
+    "id": "SEC-002",
+    "description": "Service password-encryption must be enabled",
+    "check_type": "must_match_regex",
+    "value": "^service password-encryption$",
+    "severity": "high",
+    "fix": "service password-encryption"
+  },
+  {
+    "id": "SEC-003",
+    "description": "SSH version 2 must be configured",
+    "check_type": "must_contain",
+    "value": "ip ssh version 2",
+    "severity": "critical",
+    "fix": "ip ssh version 2"
+  },
+  {
+    "id": "SEC-004",
+    "description": "HTTP server must be disabled",
+    "check_type": "must_not_contain",
+    "value": "ip http server",
+    "severity": "high",
+    "fix": "no ip http server"
+  },
+  {
+    "id": "SEC-005",
+    "description": "Banner motd must be configured",
+    "check_type": "must_contain",
+    "value": "banner motd",
+    "severity": "medium",
+    "fix": "banner motd #Unauthorized access prohibited#"
+  },
+  {
+    "id": "SEC-006",
+    "description": "Console exec-timeout must be configured",
+    "check_type": "must_contain",
+    "value": "exec-timeout",
+    "severity": "medium",
+    "fix": "line console 0\n exec-timeout 10 0"
+  },
+  {
+    "id": "SEC-007",
+    "description": "VTY lines must use SSH only (no telnet)",
+    "check_type": "must_contain",
+    "value": "transport input ssh",
+    "severity": "critical",
+    "fix": "line vty 0 15\n transport input ssh"
+  },
+  {
+    "id": "SEC-008",
+    "description": "VTY lines must use local login",
+    "check_type": "must_contain",
+    "value": "login local",
+    "severity": "high",
+    "fix": "line vty 0 15\n login local"
+  },
+  {
+    "id": "SEC-009",
+    "description": "no ip domain-lookup should be configured",
+    "check_type": "must_contain",
+    "value": "no ip domain-lookup",
+    "severity": "low",
+    "fix": "no ip domain-lookup"
+  },
+  {
+    "id": "SEC-010",
+    "description": "Telnet must not be permitted on VTY lines",
+    "check_type": "must_not_contain",
+    "value": "transport input telnet",
+    "severity": "critical",
+    "fix": "line vty 0 15\n transport input ssh"
+  }
+]

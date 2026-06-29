@@ -29,6 +29,7 @@ def main_menu():
     table.add_row("1", "First-Touch Config",             "[green]● ready[/green]")
     table.add_row("2", "ConfigForge — Bulk Config Push", "[green]● ready[/green]")
     table.add_row("3", "NetDoctor  — AI Troubleshooter", "[green]● ready[/green]")
+    table.add_row("4", "NetAudit  — Compliance Checker",  "[green]● ready[/green]")
     table.add_row("0", "Exit", "")
 
     console.print(table)
@@ -49,11 +50,14 @@ def main():
         elif choice == "3":
             import netdoctor
             netdoctor.run()
+        elif choice == "4":
+            import netaudit
+            netaudit.run()
         elif choice == "0":
             ui.info("Goodbye.")
             sys.exit(0)
         else:
-            ui.warn("Invalid choice — please pick 0-3.")
+            ui.warn("Invalid choice — please pick 0-4.")
         print()
 
 
