@@ -13,6 +13,11 @@ Passwords are read with getpass (never echoed) and masked in the preview.
 
 built by A. Wassim  ·  github.com/wassimsmt
 """
+
+__author__  = "A. Wassim"
+__version__ = "1.0"
+__license__ = "MIT"
+
 from getpass import getpass
 from pathlib import Path
 
@@ -96,8 +101,9 @@ def build_inventory():
 
 
 def _single_device():
+    import validators
     name = ui.ask("Device hostname (e.g. SW1-FLOOR1):")
-    host = ui.ask(f"Management IP for {name}:")
+    host = validators.validated_ip(f"Management IP for {name}:", ui.ask)
     return [{"name": name, "host": host}]
 
 
@@ -110,10 +116,11 @@ def _device_series():
     start = ui.int_prompt("Start number", default=1)
     count = ui.int_prompt("How many devices", default=3)
 
+    import validators
     devices = []
     for i in range(start, start + count):
         name = template.replace("{n}", str(i))
-        host = ui.ask(f"Management IP for {name}:")
+        host = validators.validated_ip(f"Management IP for {name}:", ui.ask)
         devices.append({"name": name, "host": host})
     return devices
 
@@ -147,7 +154,13 @@ def collect_config(need_credentials=True):
     # --- 2. Credentials (SSH mode only) ---------------------------------------
     if need_credentials:
         ui.section("Connection credentials (the login that ALREADY exists on the devices)")
-        cfg["username"] = ui.ask("SSH username:")
+        import netforge_config
+        saved_user = netforge_config.get("ssh", "username")
+        prompt = f"SSH username [{saved_user}]:" if saved_user else "SSH username:"
+        typed = ui.ask(prompt)
+        cfg["username"] = typed if typed else saved_user
+        if cfg["username"]:
+            netforge_config.save("ssh", "username", cfg["username"])
         cfg["password"] = getpass("SSH password: ")
         cfg["secret"] = getpass("Enable secret to log in (blank if none): ")
     else:
@@ -1216,6 +1229,7 @@ def confirm():
 # 6. Export to file (Simulation / dry-run mode)
 # ===========================================================================
 def export_all(plans):
+    import netforge_log
     OUTPUT_DIR.mkdir(exist_ok=True)
     ui.section("Exporting configuration files")
     for p in plans:
@@ -1231,6 +1245,7 @@ def export_all(plans):
         ] + p["commands"] + ["end"]
         path.write_text("\n".join(lines) + "\n", encoding="utf-8")
         ui.ok(f"Written: {path}")
+        netforge_log.log("ConfigForge", "Simulation", p["name"], "SUCCESS", str(path))
     ui.warn("These files contain plaintext passwords — do not commit them to version control.")
 
 
@@ -1238,6 +1253,7 @@ def export_all(plans):
 # 7. Push over SSH (Netmiko)
 # ===========================================================================
 def push_all(plans, cfg):
+    import netforge_log
     try:
         from netmiko import (ConnectHandler,
                              NetmikoTimeoutException,
@@ -1267,18 +1283,22 @@ def push_all(plans, cfg):
                 if cfg["save"]:
                     conn.save_config()
             ui.ok(f"{p['name']}: configuration applied.")
+            netforge_log.log("ConfigForge", "SSH", p["name"], "SUCCESS")
             results.append((p["name"], True))
 
         except NetmikoAuthenticationException:
             ui.error(f"{p['name']}: authentication failed "
                      f"(check username / password / enable secret).")
+            netforge_log.log("ConfigForge", "SSH", p["name"], "FAILED", "auth error")
             results.append((p["name"], False))
         except NetmikoTimeoutException:
             ui.error(f"{p['name']}: timeout "
                      f"(check IP, reachability, and that SSH is enabled).")
+            netforge_log.log("ConfigForge", "SSH", p["name"], "FAILED", "timeout")
             results.append((p["name"], False))
         except Exception as exc:  # noqa: BLE001 - surface anything else cleanly
             ui.error(f"{p['name']}: {exc}")
+            netforge_log.log("ConfigForge", "SSH", p["name"], "FAILED", str(exc))
             results.append((p["name"], False))
 
     # --- summary ----------------------------------------------------------

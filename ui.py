@@ -4,6 +4,10 @@ NetForge — shared UI helpers (colors, banner, input prompts).
 built by A. Wassim  ·  github.com/wassimsmt
 """
 
+__author__  = "A. Wassim"
+__version__ = "1.0"
+__license__ = "MIT"
+
 import sys
 import pyfiglet
 from rich.console import Console
@@ -50,8 +54,24 @@ GITHUB   = "github.com/wassimsmt"
 LINKEDIN = "linkedin.com/in/wassim-abelghouch"
 
 
+def verify_integrity():
+    """Verify that author attribution has not been tampered with."""
+    import hashlib
+    expected = "5e2334ee6f7afbc1af39e01572c71a377bfaf4b697333c1cd4fa7936ec5c9f69"
+    actual = hashlib.sha256(
+        f"{AUTHOR}{GITHUB}{LINKEDIN}".encode()
+    ).hexdigest()
+    if actual != expected:
+        console.print(
+            "[red]WARNING: NetForge author attribution "
+            "has been modified. This is a violation of "
+            "the MIT License.[/red]"
+        )
+
+
 def banner():
     """Print the NetForge banner using pyfiglet + Rich."""
+    verify_integrity()
     title = pyfiglet.figlet_format("NetForge", font="slant", width=80)
     console.print(f"[cyan]{title}[/cyan]")
     console.print(Panel(

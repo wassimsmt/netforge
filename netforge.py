@@ -11,6 +11,11 @@ Run me:  python netforge.py
 
 built by A. Wassim  ·  github.com/wassimsmt  ·  MIT License
 """
+
+__author__  = "A. Wassim"
+__version__ = "1.0"
+__license__ = "MIT"
+
 import sys
 
 import ui
@@ -39,6 +44,14 @@ def main_menu():
 
 
 def main():
+    import argparse
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument("--version", action="store_true")
+    args, _ = parser.parse_known_args()
+    if args.version:
+        print("NetForge v1.0 — built by A. Wassim")
+        print("github.com/wassimsmt")
+        sys.exit(0)
     ui.banner()
     while True:
         main_menu()

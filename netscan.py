@@ -11,6 +11,11 @@ Output: output/netscan_<subnet>_<timestamp>.txt
 
 built by A. Wassim · github.com/wassimsmt
 """
+
+__author__  = "A. Wassim"
+__version__ = "1.0"
+__license__ = "MIT"
+
 import ipaddress
 import socket
 import subprocess
@@ -37,12 +42,10 @@ PING_TIMEOUT = 500
 def run():
     ui.section("NetScan — Network Discovery")
 
-    subnet_str = ui.ask("Subnet to scan (e.g. 192.168.1.0/24):")
-    try:
-        network = ipaddress.IPv4Network(subnet_str, strict=False)
-    except ValueError:
-        ui.error(f"Invalid subnet: {subnet_str}")
-        return
+    import validators
+    subnet_str = validators.validated_subnet(
+        "Subnet to scan (e.g. 192.168.1.0/24):", ui.ask)
+    network = ipaddress.IPv4Network(subnet_str, strict=False)
 
     host_count = network.num_addresses - 2
     if host_count <= 0:
@@ -324,3 +327,6 @@ def save_report(scan_results, network_str):
 
     filename.write_text("\n".join(lines) + "\n", encoding="utf-8")
     ui.ok(f"Report saved: {filename}")
+    import netforge_log
+    netforge_log.log("NetScan", "Discovery", network_str, "SUCCESS",
+                     f"{n_alive} live hosts")

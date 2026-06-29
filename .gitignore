@@ -3,3 +3,5 @@ output/
 __pycache__/
 sim_input/
 backups/
+netforge.ini
+logs/

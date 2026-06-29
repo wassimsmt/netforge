@@ -13,6 +13,11 @@ is created automatically on first run.
 
 built by A. Wassim · github.com/wassimsmt
 """
+
+__author__  = "A. Wassim"
+__version__ = "1.0"
+__license__ = "MIT"
+
 import json
 import os
 import re
@@ -132,22 +137,33 @@ def run():
     creds = None
     if mode == "ssh":
         ui.section("SSH Credentials")
+        import netforge_config
+        saved_user = netforge_config.get("ssh", "username")
+        prompt = f"SSH username [{saved_user}]:" if saved_user else "SSH username:"
+        typed = ui.ask(prompt)
+        username = typed if typed else saved_user
+        if username:
+            netforge_config.save("ssh", "username", username)
         creds = {
-            "username": ui.ask("SSH username:"),
+            "username": username,
             "password": getpass("SSH password: "),
             "secret":   getpass("Enable secret (blank if none): "),
         }
 
+    import netforge_log
     results = []
     for device in devices:
         ui.section(f"Auditing {device['name']} ({device['host']})")
         running_config = collect_running_config(device, mode, creds)
         if running_config is None:
             ui.warn(f"Skipping {device['name']} — could not collect config.")
+            netforge_log.log("NetAudit", mode.upper(), device["name"], "SKIPPED")
             continue
         audit_result = run_audit(device, running_config, baseline)
         save_report(device, audit_result)
         display_report(device, audit_result)
+        netforge_log.log("NetAudit", mode.upper(), device["name"], "SUCCESS",
+                         f"score={audit_result['score']}%")
         results.append((device["name"], audit_result))
 
     if len(results) > 1:
@@ -212,8 +228,9 @@ def build_inventory():
 
 
 def _single_device():
+    import validators
     name = ui.ask("Device hostname (e.g. SW1-FLOOR1):")
-    host = ui.ask(f"Management IP for {name}:")
+    host = validators.validated_ip(f"Management IP for {name}:", ui.ask)
     return [{"name": name, "host": host}]
 
 
@@ -225,10 +242,11 @@ def _device_series():
         return []
     start = ui.int_prompt("Start number", default=1)
     count = ui.int_prompt("How many devices", default=3)
+    import validators
     devices = []
     for i in range(start, start + count):
         name = template.replace("{n}", str(i))
-        host = ui.ask(f"Management IP for {name}:")
+        host = validators.validated_ip(f"Management IP for {name}:", ui.ask)
         devices.append({"name": name, "host": host})
     return devices
 

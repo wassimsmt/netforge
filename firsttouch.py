@@ -10,6 +10,11 @@ pyserial. Simulation mode works with Packet Tracer.
 
 built by A. Wassim · github.com/wassimsmt
 """
+
+__author__  = "A. Wassim"
+__version__ = "1.0"
+__license__ = "MIT"
+
 from getpass import getpass
 from pathlib import Path
 
@@ -112,14 +117,15 @@ def collect_config(device_type):
 
     # F — Management IP
     ui.section("F — Management IP")
+    import validators
     if device_type == "switch":
         cfg["mgmt_vlan"] = ui.ask("Management VLAN ID [default 1]:") or "1"
-        cfg["mgmt_ip"]   = ui.ask("Management IP address:")
+        cfg["mgmt_ip"]   = validators.validated_ip("Management IP address:", ui.ask)
         cfg["mgmt_mask"] = ui.ask("Subnet mask:")
         cfg["gateway"]   = ui.ask("Default gateway [blank=skip]:")
     else:  # router
         cfg["mgmt_iface"] = ui.ask("Management interface (e.g. Gi0/0):")
-        cfg["mgmt_ip"]    = ui.ask("Management IP address:")
+        cfg["mgmt_ip"]    = validators.validated_ip("Management IP address:", ui.ask)
         cfg["mgmt_mask"]  = ui.ask("Subnet mask:")
         cfg["gateway"]    = ""
 
@@ -242,4 +248,6 @@ def export(cfg, cmds):
     ] + cmds + ["end"]
     filename.write_text("\n".join(lines) + "\n", encoding="utf-8")
     ui.ok(f"Written: {filename}")
+    import netforge_log
+    netforge_log.log("FirstTouch", "Simulation", cfg["hostname"], "SUCCESS", str(filename))
     ui.warn("File contains plaintext passwords — keep it secure and delete after use.")
