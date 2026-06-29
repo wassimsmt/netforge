@@ -18,7 +18,7 @@ pick a module, answer a few prompts, review a preview, and apply.
 
 | # | Module | Status |
 |---|--------|--------|
-| 1 | First-Touch Config | Coming Soon |
+| 1 | First-Touch Config (Simulation) | ready |
 | 2 | ConfigForge — Bulk Config Push (SSH + Simulation) | ready |
 | 3 | NetDoctor — AI Troubleshooter (SSH + Simulation) | ready |
 
@@ -108,6 +108,21 @@ no device needed.
 NetDoctor is strictly read-only. It will never send a `configure terminal` command
 to any device.
 
+## First-Touch Config
+Bootstraps a factory-default Cisco device from zero to SSH-ready in one pass. No existing credentials needed — this is the very first thing you run on a new device.
+
+Configures in order:
+- Hostname and `no ip domain-lookup`
+- `service password-encryption`, `enable secret`, `banner motd`
+- Local user (privilege 15) for SSH login
+- `ip domain-name`, `crypto key generate rsa modulus 2048`, `ip ssh version 2`
+- `line vty 0 15`: `login local`, `transport input ssh`
+- `line console 0`: password, login, exec-timeout
+- Management IP: SVI + default-gateway (switch) or physical interface (router)
+- `write memory`
+
+Simulation mode exports a paste-ready IOS block to `output/first_touch_<hostname>.txt` — works with Packet Tracer. Console cable mode (Coming Soon) will push directly via pyserial over USB-to-RJ45.
+
 ## Lab / testing (GNS3)
 
 Host-side Python **cannot** reach Cisco Packet Tracer devices (PT doesn't bridge
@@ -121,11 +136,14 @@ to the host network stack), so ConfigForge is tested against **GNS3**:
 
 ## Roadmap
 
-- First-Touch Config (console/serial bootstrap)
+- First-Touch Config: console-cable mode (needs USB-to-RJ45 cable + pyserial)
 - ConfigForge: console-cable connection method
-- ConfigForge: configurable SSH port (currently hardcoded to 22)
+- ConfigForge: configurable SSH port (currently port 22)
 - NetDoctor: console-cable connection method
-- NetDoctor: TextFSM/Genie structured parsing (richer analysis)
+- NetDoctor: TextFSM/Genie structured parsing
+- NetAudit — compliance checker (planned)
+- NetBackup — config backup manager (planned)
+- NetScan — subnet discovery tool (planned)
 
 ## Author
 
