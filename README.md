@@ -21,6 +21,7 @@ pick a module, answer a few prompts, review a preview, and apply.
 | 1 | First-Touch Config (Simulation) | ready |
 | 2 | ConfigForge — Bulk Config Push (SSH + Simulation) | ready |
 | 3 | NetDoctor — AI Troubleshooter (SSH + Simulation) | ready |
+| 4 | NetAudit — Compliance Checker (SSH + Simulation) | ready |
 
 ## Install
 
@@ -123,6 +124,18 @@ Configures in order:
 
 Simulation mode exports a paste-ready IOS block to `output/first_touch_<hostname>.txt` — works with Packet Tracer. Console cable mode (Coming Soon) will push directly via pyserial over USB-to-RJ45.
 
+## NetAudit
+
+Checks a device's running configuration against a user-defined compliance baseline stored in `baseline.json`. Connects over SSH (read-only) or reads from a saved running-config file in Simulation mode.
+
+**Default baseline (auto-generated on first run):**
+10 CCNA security hardening rules covering enable secret, service password-encryption, SSH v2, HTTP server disabled, banner motd, console exec-timeout, VTY SSH-only, VTY login local, no ip domain-lookup, and no telnet.
+
+**Customizing the baseline:**
+Edit `baseline.json` to add, remove, or change rules. Each rule specifies an id, description, check type (`must_contain` / `must_not_contain` / `must_match_regex`), value, severity (critical/high/medium/low), and the exact IOS fix command. The baseline is version-controlled alongside your code so compliance requirements are tracked over time.
+
+**Output:** `output/<hostname>_audit.txt` with score, failed rules with fix commands, and passed rules.
+
 ## Lab / testing (GNS3)
 
 Host-side Python **cannot** reach Cisco Packet Tracer devices (PT doesn't bridge
@@ -141,7 +154,6 @@ to the host network stack), so ConfigForge is tested against **GNS3**:
 - ConfigForge: configurable SSH port (currently port 22)
 - NetDoctor: console-cable connection method
 - NetDoctor: TextFSM/Genie structured parsing
-- NetAudit — compliance checker (planned)
 - NetBackup — config backup manager (planned)
 - NetScan — subnet discovery tool (planned)
 
