@@ -15,18 +15,24 @@ import sys
 
 import ui
 import configforge
+from rich.table import Table
+from ui import console
 
 
 def main_menu():
-    print(f"{ui.WHITE}{ui.BRIGHT}  Main Menu{ui.RESET}")
-    print(f"  {ui.GREEN}[1]{ui.RESET} First-Touch Config              "
-          f"{ui.YELLOW}(Coming Soon){ui.RESET}")
-    print(f"  {ui.GREEN}[2]{ui.RESET} ConfigForge — Bulk Config Push  "
-          f"{ui.GREEN}ready{ui.RESET}")
-    print(f"  {ui.GREEN}[3]{ui.RESET} NetDoctor  — AI Troubleshooter   "
-          f"{ui.GREEN}ready{ui.RESET}")
-    print(f"  {ui.GREEN}[0]{ui.RESET} Exit")
-    print()
+    table = Table(show_header=True, header_style="bold cyan",
+                  border_style="blue", show_lines=False)
+    table.add_column("#",      style="bold green", width=4)
+    table.add_column("Module", style="white",      min_width=35)
+    table.add_column("Status", style="white",      width=14)
+
+    table.add_row("1", "First-Touch Config",             "[yellow]Coming Soon[/yellow]")
+    table.add_row("2", "ConfigForge — Bulk Config Push", "[green]● ready[/green]")
+    table.add_row("3", "NetDoctor  — AI Troubleshooter", "[green]● ready[/green]")
+    table.add_row("0", "Exit", "")
+
+    console.print(table)
+    console.print()
 
 
 def main():
