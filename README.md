@@ -22,6 +22,7 @@ pick a module, answer a few prompts, review a preview, and apply.
 | 2 | ConfigForge — Bulk Config Push (SSH + Simulation) | ready |
 | 3 | NetDoctor — AI Troubleshooter (SSH + Simulation) | ready |
 | 4 | NetAudit — Compliance Checker (SSH + Simulation) | ready |
+| 5 | NetBackup — Config Backup Manager (SSH + Simulation) | ready |
 
 ## Install
 
@@ -136,6 +137,19 @@ Edit `baseline.json` to add, remove, or change rules. Each rule specifies an id,
 
 **Output:** `output/<hostname>_audit.txt` with score, failed rules with fix commands, and passed rules.
 
+## NetBackup
+
+Connects to one device or a series over SSH and saves each device's running configuration to a timestamped backup file. Strictly read-only.
+
+Backups are saved to:
+```
+backups/<hostname>/<hostname>_<YYYY-MM-DD_HH-MM>.txt
+```
+
+Each backup file includes a 5-line header with device name, IP, timestamp, and NetBackup attribution, followed by the raw running-config output. The `backups/` folder is excluded from git (`.gitignore`) since running configs contain sensitive network topology information.
+
+Simulation mode generates a template file you can fill with real `show running-config` output for testing backup workflows without a live device.
+
 ## Lab / testing (GNS3)
 
 Host-side Python **cannot** reach Cisco Packet Tracer devices (PT doesn't bridge
@@ -154,7 +168,6 @@ to the host network stack), so ConfigForge is tested against **GNS3**:
 - ConfigForge: configurable SSH port (currently port 22)
 - NetDoctor: console-cable connection method
 - NetDoctor: TextFSM/Genie structured parsing
-- NetBackup — config backup manager (planned)
 - NetScan — subnet discovery tool (planned)
 
 ## Author
