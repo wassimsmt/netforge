@@ -31,6 +31,7 @@ def main_menu():
     table.add_row("3", "NetDoctor  — AI Troubleshooter", "[green]● ready[/green]")
     table.add_row("4", "NetAudit  — Compliance Checker",  "[green]● ready[/green]")
     table.add_row("5", "NetBackup  — Config Backup Manager", "[green]● ready[/green]")
+    table.add_row("6", "NetScan   — Network Discovery",     "[green]● ready[/green]")
     table.add_row("0", "Exit", "")
 
     console.print(table)
@@ -57,11 +58,14 @@ def main():
         elif choice == "5":
             import netbackup
             netbackup.run()
+        elif choice == "6":
+            import netscan
+            netscan.run()
         elif choice == "0":
             ui.info("Goodbye.")
             sys.exit(0)
         else:
-            ui.warn("Invalid choice — please pick 0-5.")
+            ui.warn("Invalid choice — please pick 0-6.")
         print()
 
 
