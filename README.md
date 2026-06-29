@@ -189,6 +189,27 @@ to the host network stack), so ConfigForge is tested against **GNS3**:
 - Input validation: IP/subnet format checking
 - Config file (netforge.ini): save default preferences
 
+## Development
+
+### Running
+```
+python netforge.py           — interactive menu
+python netforge.py --version — print version and exit
+```
+
+### Logging
+All module runs are logged to `logs/netforge.log`:
+```
+2026-06-29 21:49:47 | ConfigForge | SSH | SW1-FLOOR1 | SUCCESS
+```
+The `logs/` folder is excluded from git.
+
+### Configuration
+User preferences (SSH username, timeout) are saved to `netforge.ini` automatically. Edit it to set defaults. The file is excluded from git.
+
+### Compliance baseline
+Edit `baseline.json` to customize NetAudit rules. The file is version-controlled so compliance requirements are tracked over time.
+
 ## Author
 
 **A. Wassim**
