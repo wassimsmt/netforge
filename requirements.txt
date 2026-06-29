@@ -2,3 +2,4 @@ netmiko>=4.0
 rich>=13.0
 pyfiglet>=1.0
 google-genai>=1.0
+pyserial>=3.5

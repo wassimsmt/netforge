@@ -26,7 +26,7 @@ def main_menu():
     table.add_column("Module", style="white",      min_width=35)
     table.add_column("Status", style="white",      width=14)
 
-    table.add_row("1", "First-Touch Config",             "[yellow]Coming Soon[/yellow]")
+    table.add_row("1", "First-Touch Config",             "[green]● ready[/green]")
     table.add_row("2", "ConfigForge — Bulk Config Push", "[green]● ready[/green]")
     table.add_row("3", "NetDoctor  — AI Troubleshooter", "[green]● ready[/green]")
     table.add_row("0", "Exit", "")
@@ -42,7 +42,8 @@ def main():
         choice = ui.ask("Select an option >")
 
         if choice == "1":
-            ui.coming_soon("First-Touch Config")
+            import firsttouch
+            firsttouch.run()
         elif choice == "2":
             configforge.run()
         elif choice == "3":
