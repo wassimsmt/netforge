@@ -23,6 +23,7 @@ pick a module, answer a few prompts, review a preview, and apply.
 | 3 | NetDoctor — AI Troubleshooter (SSH + Simulation) | ready |
 | 4 | NetAudit — Compliance Checker (SSH + Simulation) | ready |
 | 5 | NetBackup — Config Backup Manager (SSH + Simulation) | ready |
+| 6 | NetScan — Network Discovery | ready |
 
 ## Install
 
@@ -150,6 +151,21 @@ Each backup file includes a 5-line header with device name, IP, timestamp, and N
 
 Simulation mode generates a template file you can fill with real `show running-config` output for testing backup workflows without a live device.
 
+## NetScan
+
+Discovers live hosts on a subnet using a parallel ping sweep, checks SSH port 22 availability on each live host, and optionally identifies Cisco devices by connecting via Netmiko.
+
+**Three-phase scan:**
+- Phase 1 — Ping sweep: pings all hosts in parallel (up to 50 concurrent threads) with a Rich progress bar showing real-time results
+- Phase 2 — SSH port check: checks port 22 on all live hosts
+- Phase 3 — Cisco identification (optional): connects via Netmiko to pull hostname and IOS platform from each SSH-reachable host
+
+**Output:** `output/netscan_<subnet>_<timestamp>.txt` with per-host results (alive, SSH open/closed, hostname, platform).
+
+Strictly read-only — never modifies any device.
+
+**Note:** Ping uses Windows syntax by default (`ping -n 1 -w 500`). Linux/macOS users should change `_ping_host()` to use `-c 1 -W 1`.
+
 ## Lab / testing (GNS3)
 
 Host-side Python **cannot** reach Cisco Packet Tracer devices (PT doesn't bridge
@@ -168,7 +184,10 @@ to the host network stack), so ConfigForge is tested against **GNS3**:
 - ConfigForge: configurable SSH port (currently port 22)
 - NetDoctor: console-cable connection method
 - NetDoctor: TextFSM/Genie structured parsing
-- NetScan — subnet discovery tool (planned)
+- Cross-platform ping support in NetScan (currently Windows only)
+- Logging system: audit trail for all module runs
+- Input validation: IP/subnet format checking
+- Config file (netforge.ini): save default preferences
 
 ## Author
 
