@@ -28,6 +28,11 @@ pick a module, answer a few prompts, review a preview, and apply.
 pip install -r requirements.txt
 ```
 
+Dependencies: `netmiko>=4.0`, `rich>=13.0`, `pyfiglet>=1.0`, `google-genai>=1.0`
+
+## Terminal UI
+NetForge uses [Rich](https://github.com/Textualize/rich) for colored tables, panels, and section headers, and [pyfiglet](https://github.com/pwaller/pyfiglet) for the ASCII banner. Both render correctly on Windows Terminal, macOS Terminal, and Linux without any extra configuration.
+
 ## Run
 
 ```bash
